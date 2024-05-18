@@ -385,12 +385,9 @@
 
 <script>
 
-$(".alert").fadeTo(2000, 500).slideUp(500, function() {
-        $(".alert").slideUp(500);
-    });
+
 
     $('#form_add').on('submit', function(event) {
-
         event.preventDefault();
         var data = new FormData(this);
         let url = $(this).attr('action');
@@ -410,7 +407,9 @@ $(".alert").fadeTo(2000, 500).slideUp(500, function() {
             success: function(result) {
                 $("#add-modal").modal('hide');
                 $('#form_add').trigger("reset");
-                toastr.success("@lang('تمت العملية بنجاح')");
+                if(result.success){
+                    toastr.success(result.success);
+                }
                 table.draw()
             },
             error: function(data) {

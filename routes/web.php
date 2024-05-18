@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\Category\CategoryController;
 use App\Http\Controllers\Error\ErrorController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ProfileController;
@@ -123,10 +122,6 @@ Route::middleware('auth')->group(function(){
             Route::get('/', 'index')->name('index');
             Route::get('/getdata', 'getdata')->name('getdata');
         });
-
-
-
-
     });
 
     Route::prefix('admin/profile')->name('profile.')->controller(\App\Http\Controllers\Admin\Profile\ProfileController::class)->group(function () {

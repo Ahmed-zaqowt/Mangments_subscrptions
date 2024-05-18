@@ -10,6 +10,7 @@ use App\Models\Subscriber;
 use App\Models\Subscription;
 use App\Models\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -140,12 +141,25 @@ class DistributorController extends Controller
             $basic = new \Vonage\Client\Credentials\Basic('ac403f49', '2HbnsHlqYznqPIdg');
             $client = new \Vonage\Client($basic);
 
-            $response = $client->sms()->send(
-                new \Vonage\SMS\Message\SMS(env('MOBILE_ADMIN'), 'VEGA' ,'تمت اضافة اشتراك جديد' , 'unicode')
-            );
-
-            $message = $response->current();
-
+            try {
+                $response = $client->sms()->send(
+                    new \Vonage\SMS\Message\SMS('12344', 'VEGA' ,'تمت اضافة اشتراك جديد' , 'unicode')
+                );
+            } catch (\Vonage\Client\Exception\Request $e) {
+                if ($e->getCode() == 429) {
+                    return response()->json([
+                        "success" => " تم ارسال الطلب بنجاح لكن تم تجاوز الحصة - يرجى المحاولة لاحقاً."
+                    ], 201);
+                } else {
+                    return response()->json([
+                        "success" => " تم ارسال الطلب بنجاح ولكن حدث خطأ في ارسال الرسالة". $e->getMessage()
+                    ], 201);
+                }
+            } catch (\Exception $e) {
+                return response()->json([
+                    "success" => " تم ارسال الطلب بنجاح ولكن حدث خطأ في ارسال الرسالة حدث خطأ غير متوقع: ". $e->getMessage()
+                ], 201);
+            }
 
             return response()->json([
                 "success" => "تم ارسال الطلب بنجاح "

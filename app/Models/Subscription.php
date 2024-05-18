@@ -34,4 +34,16 @@ class Subscription extends Model
     function package(){
         return $this->belongsTo(Package::class);
     }
+
+
+    static function  times($id) {
+        $time = self::where('id' , $id)->first() ;
+        if($time->time == 1 ){
+          return 'شهر' ;
+        }elseif($time->time == 1 ){
+            return 'شهرين' ;
+        }elseif($time->time == 1 ){
+            return 'ثلاث اشهر' ;
+        }
+     }
 }
